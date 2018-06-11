@@ -18,107 +18,111 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <style type="text/css" nonce="">
-  .was_a,d,div,p,a,input {font-family: arial, sans-serif;}
-  </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style type="text/css" nonce="">
+      .was_a,d,div,p,a,input {font-family: arial, sans-serif;}
+    </style>
 
   <title><?=MAIL_NAME?> - <?=subject ?></title>
   <style type="text/css" nonce="">
-  body, td {font-size:13px} .was_a:link, .was_a:active, a:link, a:active {color:#1155CC; text-decoration:none} .was_a:hover, a:hover {text-decoration:underline; cursor: pointer} .was_a:visited, a:visited{color:##6611CC} img{border:0px} pre { white-space: pre; white-space: -moz-pre-wrap; white-space: -o-pre-wrap; white-space: pre-wrap; word-wrap: break-word; max-width: 800px; overflow: auto;} .logo { left: -7px; position: relative; }
+    body, td {font-size:13px} .was_a:link, .was_a:active, a:link, a:active {color:#1155CC; text-decoration:none} .was_a:hover, a:hover {text-decoration:underline; cursor: pointer} .was_a:visited, a:visited{color:##6611CC} img{border:0px} pre { white-space: pre; white-space: -moz-pre-wrap; white-space: -o-pre-wrap; white-space: pre-wrap; word-wrap: break-word; max-width: 800px; overflow: auto;} .logo { left: -7px; position: relative; }
   </style>
 
   </head>
   <body>
-
-
-  <div class="bodycontainer">
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tbody>
-  <tr height="14px">
-  <td width="143">
-  <img src="<?!=LOGO.src?>" width="<?=LOGO.width?>" height="<?=LOGO.height?>" alt="<?=MAIL_NAME?>" class="logo">
-  </td>
-  <td align="right">
-  <font size="-1" color="#777"><b><?=gmailAccountName?> &lt;<?=gmailAccount?>&gt;</b></font>
-  </td></tr>
-  </tbody>
-  </table>
-  <hr>
-  <div class="maincontent">
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tbody>
-  <tr><td>
-  <font size="+1"><b><?=subject ?></b></font><br>
-  </td></tr></tbody></table>
-  <hr>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" class="message">
-    <tbody>
-    <tr>
-       <td><font size="-1"><b><?=messageObject.getFrom()?></b></font></td>
-       <td align="right"><font size="-1"><?= messageDate?></font></td>
-    </tr>
-    <tr>
-      <td colspan="2" style="padding-bottom: 4px;">
-         <font size="-1" class="recipient">
-            <? if (messageObject.getReplyTo() != ""){ ?><div class="replyto">Reply-To: <?=messageObject.getReplyTo() ?></div> <? } ?>
-            <? if (messageObject.getTo() != ""){ ?><div>To: <?=messageObject.getTo()?></div> <? } ?>
-            <? if (messageObject.getCc() != ""){ ?><div>Cc: <?=messageObject.getCc()?></div> <? } ?>
-            <? if (messageObject.getBcc() != ""){ ?><div>To: <?=messageObject.getBcc()?></div> <? } ?>
-           </font>
-       </td>
-    </tr>
-    <tr><td colspan="2">
-    <table width="100%" cellpadding="12" cellspacing="0" border="0"><tbody>
-    <tr><td>
-    <div style="overflow: hidden;">
-    <font size="-1">
-    <?!= retrievedMessageObject.cleanBody ?>
-    </font>
-    </div>
-    <? 
-    var atts = retrievedMessageObject.cleanAttachments;
-    if (atts.length > 0) {
-    ?>
-    <br clear="all">
-    <div style="width:50%;border-top:2px #AAAAAA solid"></div>
-    <table class="att" cellspacing="0" cellpadding="5" border="0">
-    <tbody>
-    <? if (atts.length > 1) { ?><tr><td><b style="padding-left:3"><?= atts.length ?> attachments</b></td></tr><? } ?>
-    <? for(var att_index=0;att_index<atts.length;att_index++){ ?>
-    <tr><td>
-    <table cellspacing="0" cellpadding="0">
-    <tbody>
-    <tr>
-    <td>
-    <? var mimeType = atts[att_index].getContentType();
-   var iconSrc = "generic.gif";
-   if (mimeType == MimeType.HTML){iconSrc = "html2.gif";   }
-   else if (mimeType == MimeType.MICROSOFT_EXCEL || mimeType == MimeType.MICROSOFT_EXCEL_LEGACY){iconSrc = "xls.gif";   }
-   else if (mimeType == MimeType.MICROSOFT_POWERPOINT || mimeType == MimeType.MICROSOFT_POWERPOINT_LEGACY){ iconSrc = "ppt.gif";    }
-   else if (mimeType == MimeType.MICROSOFT_WORD || mimeType == MimeType.MICROSOFT_WORD_LEGACY || mimeType == MimeType.RTF){ iconSrc = "doc.gif"; }
-   else if (mimeType == MimeType.PDF){ iconSrc = "pdf.gif";    }
-   else if (mimeType == MimeType.PLAIN_TEXT){ iconSrc = "txt.gif"; }
-   else if (mimeType == MimeType.ZIP){ iconSrc = "zip.gif"; }          
+    <div class="bodycontainer">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tbody>
+          <tr height="14px">
+            <td width="143">
+              <img src="<?!=LOGO.src?>" width="<?=LOGO.width?>" height="<?=LOGO.height?>" alt="<?=MAIL_NAME?>" class="logo">
+            </td>
+           <td align="right">
+            <font size="-1" color="#777"><b><?=gmailAccountName?> &lt;<?=gmailAccount?>&gt;</b></font>
+           </td></tr>
+       </tbody>
+     </table>
+     <hr>
+     <div class="maincontent">
+       <table width="100%" cellpadding="0" cellspacing="0" border="0">
+         <tbody>
+            <tr><td>
+              <font size="+1"><b><?=subject ?></b></font><br>
+            </td></tr>
+         </tbody>
+       </table>
+       <hr>
+       <table width="100%" cellpadding="0" cellspacing="0" border="0" class="message">
+          <tbody>
+            <tr>
+               <td><font size="-1"><b><?=messageObject.getFrom()?></b></font></td>
+               <td align="right"><font size="-1"><?= messageDate?></font></td>
+            </tr>
+            <tr>
+               <td colspan="2" style="padding-bottom: 4px;">
+                 <font size="-1" class="recipient">
+                    <? if (messageObject.getReplyTo() != ""){ ?><div class="replyto">Reply-To: <?=messageObject.getReplyTo() ?></div> <? } ?>
+                    <? if (messageObject.getTo() != ""){ ?><div>To: <?=messageObject.getTo()?></div> <? } ?>
+                    <? if (messageObject.getCc() != ""){ ?><div>Cc: <?=messageObject.getCc()?></div> <? } ?>
+                    <? if (messageObject.getBcc() != ""){ ?><div>To: <?=messageObject.getBcc()?></div> <? } ?>
+                 </font>
+                </td>
+             </tr>
+             <tr><td colspan="2">
+                <table width="100%" cellpadding="12" cellspacing="0" border="0"><tbody>
+                   <tr><td>
+                      <div style="overflow: hidden;">
+                         <font size="-1">
+                            <?!= retrievedMessageObject.cleanBody ?>
+                         </font>
+                      </div>
+                  <? 
+                     var atts = retrievedMessageObject.cleanAttachments;
+                     if (atts.length > 0) {
+                  ?>
+                     <br clear="all">
+                     <div style="width:50%;border-top:2px #AAAAAA solid"></div>
+                     <table class="att" cellspacing="0" cellpadding="5" border="0">
+                        <tbody>
+                           <? if (atts.length > 1) { ?>
+                                <tr><td>
+                                    <b style="padding-left:3"><?= atts.length ?> attachments</b>
+                                 </td></tr>
+                           <? } ?>
+                           <? for(var att_index=0;att_index<atts.length;att_index++){ ?>
+                                <tr><td>
+                                   <table cellspacing="0" cellpadding="0">
+                                      <tbody>
+                                         <tr>
+                                            <td>
+                                              <? var mimeType = atts[att_index].getContentType();
+                                                 var iconSrc = "generic.gif";
+                                                 if (mimeType == MimeType.HTML){iconSrc = "html2.gif";   }
+                                                 else if (mimeType == MimeType.MICROSOFT_EXCEL || mimeType == MimeType.MICROSOFT_EXCEL_LEGACY){iconSrc = "xls.gif";   }
+                                                 else if (mimeType == MimeType.MICROSOFT_POWERPOINT || mimeType == MimeType.MICROSOFT_POWERPOINT_LEGACY){ iconSrc = "ppt.gif";    }
+                                                 else if (mimeType == MimeType.MICROSOFT_WORD || mimeType == MimeType.MICROSOFT_WORD_LEGACY || mimeType == MimeType.RTF){ iconSrc = "doc.gif"; }
+                                                 else if (mimeType == MimeType.PDF){ iconSrc = "pdf.gif";    }
+                                                 else if (mimeType == MimeType.PLAIN_TEXT){ iconSrc = "txt.gif"; }
+                                                 else if (mimeType == MimeType.ZIP){ iconSrc = "zip.gif"; }          
          
-         ?>
-     <span class="was_a"><img width="16" height="16" src="<?!=srcToData("https://ssl.gstatic.com/ui/v1/icons/mail/images/" + iconSrc)?>"></span>
-    </td>
-    <td width="7"></td>
-    <td><b><?=atts[att_index].getName()?></b><br><?=formatBytes(atts[att_index].getSize(),0)?></td>
-    </tr>
-    </tbody>
-    </table>
-    </td></tr>
-    <? } ?>
-    </tbody></table>
-    <? } ?>
+                                              ?>
+                                              <span class="was_a"><img width="16" height="16" src="<?!=srcToData("https://ssl.gstatic.com/ui/v1/icons/mail/images/" + iconSrc)?>"></span>
+                                           </td>
+                                           <td width="7"></td>
+                                           <td><b><?=atts[att_index].getName()?></b><br><?=formatBytes(atts[att_index].getSize(),0)?></td>
+                                        </tr>
+                                     </tbody>
+                                  </table>
+                               </td></tr>
+                            <? } ?>
+                         </tbody></table>
+                      <? } ?>
     
-    </td></tr>
-    </tbody></table>
-    </td></tr>
-    </tbody></table>
-    </div>
+                   </td></tr>
+                </tbody></table>
+             </td></tr>
+          </tbody></table>
+       </div>
     </div>
     
     
