@@ -1,0 +1,96 @@
+/**
+ * Converts inline images and external images into Encoded Data.  Removes converted inline images from "attachments collection"
+ * @param {GmailMessage} messageObject A gmail message
+ * @return {PreppedMessageObject} result 
+ *    @return {GmailMessage} result.messageObject Original gmail message
+ *    @return {String} result.cleanBody new message body
+ *    @return {Attachment} result.cleanAttachments attachments excluding inline images
+ *    @return {String} result.cleanSubject
+ *    @return {String} result.cleanDate
+ */
+function prepMessageObject(messageObject){
+  var emailTemplate = messageObject.getBody();
+  var rawContent = messageObject.getRawContent();
+  var attachments = messageObject.getAttachments();
+  var cleanDateString = Utilities.formatDate(messageObject.getDate(), "America/Toronto", "EEE, MMM d, YYYY 'at' h:mm aa");
+  var hostedImgToReplace = [];
+    var inlineImgToReplace = [];
+
+  var inlineImages = {};
+
+  var imgVars = emailTemplate.match(/<img[^>]+>/g); // retrieve all image tags in body.
+  
+  var regMessageId = new RegExp(messageObject.getId(), "g"); // RegEx to find the message id in strings
+  
+    if(imgVars != null){
+      for (var i = 0; i < imgVars.length; i++) {
+        if (imgVars[i].search(regMessageId) != -1) {
+          var id = imgVars[i].match(/realattid=([^&]+)&/);
+          if (id != null) {
+            var temp = rawContent.split(id[1])[1];
+            temp = temp.substr(temp.lastIndexOf('Content-Type'));
+            var imgTitle = temp.match(/name="([^"]+)"/);
+            if (imgTitle != null) inlineImgToReplace.push([imgTitle[1], imgVars[i], id[1]]);
+          }
+        }
+        
+        else {
+         hostedImgToReplace.push(["No Title",imgVars[i],"No ID"]);         
+        }
+        
+        
+      }
+    }
+
+    for (var i = 0; i < inlineImgToReplace.length; i++) {
+      for (var j = 0; j < attachments.length; j++) {
+        if(attachments[j].getName() == inlineImgToReplace[i][0]) {
+          
+          inlineImages[inlineImgToReplace[i][2]] = attachments[j].copyBlob();
+          var newData = "data:" + inlineImages[inlineImgToReplace[i][2]].getContentType()+';base64,'+ Utilities.base64Encode(inlineImages[inlineImgToReplace[i][2]].getBytes()) 
+          
+          attachments.splice(j, 1);
+          if (newData.substr(0,5) == "data:") {
+             var newImg = inlineImgToReplace[i][1].replace(/src="[^\"]+\"/, "src=\"" + newData + "\"");
+             emailTemplate = emailTemplate.replace(inlineImgToReplace[i][1], newImg);
+          }
+        }
+      }
+    }
+
+    for(var i=0;i<hostedImgToReplace.length;i++){
+      
+      var srcVar = hostedImgToReplace[i][1].match(/(src=\")([^\"]+)(\")/);
+      if (srcVar != null){
+        var newData = srcToData(srcVar[2]);
+        if (newData.substr(0,5) == "data:") {
+      
+          var newImg = hostedImgToReplace[i][1].replace(/src="[^\"]+\"/, "src=\"" + newData + "\"");
+          emailTemplate = emailTemplate.replace(hostedImgToReplace[i][1], newImg);
+        }
+      }
+      
+    }  
+  
+
+  var result = {
+    messageObject: messageObject,
+    cleanBody: emailTemplate,
+    cleanAttachments: attachments,
+    cleanSubject: messageObject.getSubject() == "" ? "(no subject)" : messageObject.getSubject(),
+    cleanDateString: cleanDateString,
+  }
+  return result;
+}
+
+
+
+function srcToData(string){
+  if (string.substr(0,5) == "data:"){return string; }
+  var img = UrlFetchApp.fetch(string);
+  var data = img.getBlob().getContentType()+';base64,'+ Utilities.base64Encode(img.getBlob().getBytes());
+  
+  return "data:"+data;
+  
+  
+}
