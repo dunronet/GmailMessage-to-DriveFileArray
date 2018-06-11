@@ -1,0 +1,19 @@
+         
+/**
+ * Convert size given in bytes into the size normally displayed in Gmail's attachment list
+ * @param {int} bytes number of bytes
+ * @param {int} decimals number of decimals. Default == 0
+ * @param {boolean} proper Whether to convert using 1024 (default) or 1000
+ * @return {String} Size in largest unit
+ */  
+function formatBytes(bytes,decimals,proper,nospace) {
+  proper = proper || true;
+  nospace = nospace || true;
+   if(bytes == 0) return '0 Bytes';
+   
+  var k = proper ? 1024: 1000;
+  var dm = decimals || 0;
+  const sizes = ['Bytes', 'K', 'MB', 'GB']; //Gmail doesn't allow attachments in the GB range.  KB are shown as K in Gmail UI
+  var i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + (nospace ? '' : ' ') + sizes[i];
+}
