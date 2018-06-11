@@ -6,7 +6,7 @@
  * @param {String} userAccountName Full name of person exporting
  * @param {boolean} [includeAttachments=true] Whether to also save attachments (in original format)
  * @param {Folder} [targetFolder] Folder to save PDF and attachments to.  By default root folder ('My Drive')
- * @return void
+ * @return {File[]} resultArray Files generated
  *
  *     Files will be created in targetFolder
  *     <recordNum>-0 <date>.pdf - GmailMessage body & headers
@@ -16,6 +16,8 @@
 function exportGmailMessage(recordNum,messageID,userAccount,userAccountName,includeAttachments,targetFolder){
   targetFolder = targetFolder || DriveApp.getRootFolder(); // targetFolder should be required, but putting this here until I figure out a better error response
   includeAttachments = includeAttachments || true;
+  
+  var resultArray = [];
   
   var htmlT = HtmlService.createTemplateFromFile("ToFile_GmailPrintTemplate");
   htmlT.gmailAccount = userAccount;
@@ -32,7 +34,8 @@ function exportGmailMessage(recordNum,messageID,userAccount,userAccountName,incl
     var atts = preppedMessageObject.cleanAttachments;
     for(var i=0;i<atts.length;i++){
        var result = DriveApp.createFile(atts[i]);
-      targetFolder.addFile(result)
+      targetFolder.addFile(result);
+      resultArray.push(result);
     var originalName = result.getName();
     result.setName(recordNum + "-" + (i+1) + " - " + originalName);
     result.setDescription("Exported from Gmail, user " + userAccountName + "(" + userAccount + ")");
@@ -44,6 +47,10 @@ function exportGmailMessage(recordNum,messageID,userAccount,userAccountName,incl
   var rf = htmlFile.getAs("application/pdf");
   var result = DriveApp.createFile(rf);
   targetFolder.addFile(result);
+  resultArray.push(result);
   result.setName(recordNum + "-0 - " + preppedMessageObject.messageObject.getDate() + ".pdf");
   result.setDescription("Exported from Gmail, user " + userAccountName + "(" + userAccount + ")");
+  
+  return resultArray;
+  
 }
